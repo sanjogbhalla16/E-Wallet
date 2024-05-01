@@ -1,9 +1,9 @@
 const express = require("express");
 const zod = require("zod");
-import { user, account } from "../db";
-import { JWT_SECRET } from "../config";
-import { sign } from "jsonwebtoken";
-import authMiddleware from "../middleware";
+const { user, account } = require("../db");
+const { JWT_SECRET } = require("../config");
+const jwt = require("jsonwebtoken");
+const authMiddleware = require("../middleware");
 const app = express();
 
 const userRouter = Router();
