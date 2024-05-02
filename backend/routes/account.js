@@ -4,7 +4,7 @@
 //get the middlewares for the authentication
 const express = require("express");
 const { authMiddleware } = require("../middleware");
-const { Account } = require("../db");
+const { account } = require("../db");
 const { default: mongoose } = require("mongoose");
 
 const accountRouter = express.Router();
@@ -72,4 +72,4 @@ accountRouter.post("/transfer", authMiddleware, async (req, res) => {
   });
 });
 
-export default accountRouter;
+module.exports = accountRouter;

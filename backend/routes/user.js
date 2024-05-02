@@ -4,9 +4,8 @@ const { user, account } = require("../db");
 const { JWT_SECRET } = require("../config");
 const jwt = require("jsonwebtoken");
 const authMiddleware = require("../middleware");
-const app = express();
 
-const userRouter = Router();
+const userRouter = express.Router();
 const userSchema = zod.object({
   //username
   //first name
@@ -52,7 +51,7 @@ userRouter.post("/signup", async (req, res) => {
 
   //we need to create Account for this user
 
-  await _create({
+  await account.create({
     userId: userId,
     balance: 1 + Math.random() * 1000,
   });
@@ -60,7 +59,7 @@ userRouter.post("/signup", async (req, res) => {
   // Create a JWT token with a payload (e.g., user ID)
   // const payload = { userId: user.id };
   // const token = jwt.sign(payload, secretKey, { expiresIn: "1h" }); // Token expires in 1 hour
-  const token = sign(
+  const token = jwt.sign(
     {
       userId,
     },
@@ -75,9 +74,9 @@ userRouter.post("/signup", async (req, res) => {
 
 //now we make the signin request
 //first create schema for zod
-const signinBody = object({
-  username: string().email(),
-  password: string(),
+const signinBody = zod.object({
+  username: zod.string().email(),
+  password: zod.string(),
 });
 
 userRouter.post("/signin", async (req, res) => {
@@ -85,12 +84,12 @@ userRouter.post("/signin", async (req, res) => {
   const response = userSchema.safeParse(req.body);
   if (!response.success) {
     res.status(411).json({
-      message: "Error while logging in",
+      message: "Email already taken / Incorrect inputs",
     });
   }
   //now we see if there exists a user
   //this process will take time so we need to await this
-  const existingUser = await findOne({
+  const existingUser = await user.findOne({
     username: req.body.username,
     password: req.body.password,
   });
@@ -98,7 +97,13 @@ userRouter.post("/signin", async (req, res) => {
   if (existingUser) {
     // we got an existing user
     //we need to return the token
-    const token = sign({
+    const token = jwt.sign(
+      {
+        userId: user._id,
+      },
+      JWT_SECRET
+    );
+    res.json({
       token: token,
     });
     return;
@@ -109,10 +114,10 @@ userRouter.post("/signin", async (req, res) => {
 });
 
 //we first make the schema from zod
-const updateUser = object({
-  password: string().optional(),
-  firstName: string().optional(),
-  lastName: string().optional(),
+const updateUser = zod.object({
+  password: zod.string().optional(),
+  firstName: zod.string().optional(),
+  lastName: zod.string().optional(),
 });
 //we need to return these above info and show it in the frontend
 userRouter.put("/", authMiddleware, async (req, res) => {
@@ -127,7 +132,7 @@ userRouter.put("/", authMiddleware, async (req, res) => {
   //the authentication is already done in the request no we need to update the data
   //we choose User because in Mongoose we use model
   //so Model.updateOne()
-  await updateOne({ _id: req.userId }, req.body);
+  await user.updateOne({ id: req.userId }, req.body);
 
   res.json({
     message: "Updated successfully",
@@ -154,7 +159,7 @@ app.get('/user/:id', function(req, res) {
 userRouter.get("/bulk", async (req, res) => {
   const filter = req.query.filter || "";
 
-  const user = await find({
+  const users = await user.find({
     $or: [
       {
         firstName: { $regex: filter },
@@ -164,6 +169,7 @@ userRouter.get("/bulk", async (req, res) => {
       },
     ],
   });
+
   res.json({
     user: users.map((user) => ({
       username: user.username,
