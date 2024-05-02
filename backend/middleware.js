@@ -24,7 +24,7 @@ const authMiddleware = (req, res, next) => {
 
   try {
     //this will check if both matches
-    const decoded = verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET);
 
     if (decoded.userId) {
       req.userId = decoded.userId;
