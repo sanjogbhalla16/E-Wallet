@@ -5,9 +5,9 @@ request contains a valid authentication token (e.g., JWT)
 and ensures that the user is authorized to access the requested resource
 */
 //first setup the JWT
-import { verify } from "jsonwebtoken";
+const jwt = require("jsonwebtoken");
 //get the secret key also
-import JWT_SECRET from "./config";
+const { JWT_SECRET } = require("./config");
 
 //Create an authentication middleware function that verifies the JWT token in the request header.
 const authMiddleware = (req, res, next) => {
@@ -35,4 +35,7 @@ const authMiddleware = (req, res, next) => {
   } catch (error) {
     return res.status(403).json({});
   }
+};
+module.exports = {
+  authMiddleware,
 };

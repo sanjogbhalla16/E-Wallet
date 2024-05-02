@@ -15,7 +15,7 @@ mongoose.connect(
   "mongodb+srv://sanjogbhalla:Cosmos1622@cluster0.l7ccths.mongodb.net/paytm"
 );
 
-const userSchema = new Schema({
+const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
@@ -56,9 +56,9 @@ store MongoDB ObjectIDs. MongoDB ObjectIDs are unique identifiers automatically 
 for each document in a collection.
 */
 
-const accountSchema = new Schema({
+const accountSchema = new mongoose.Schema({
   userId: {
-    type: Schema.Types.ObjectId, //reference to User Model , taken from the User table
+    type: mongoose.Schema.Types.ObjectId, //reference to User Model , taken from the User table
     ref: "User", //this ref works as a foreign key as provides a reference to the User model
     required: true,
   },
@@ -68,12 +68,12 @@ const accountSchema = new Schema({
   },
 });
 
-const account = model("Account", accountSchema);
+const account = mongoose.model("Account", accountSchema);
 //then make the model for this schema and export it
-const user = model("Users", userSchema); //Users here is the naming convention for userSchema
+const user = mongoose.model("Users", userSchema); //Users here is the naming convention for userSchema
 
 //this is what you want
-export default {
+module.exports = {
   user, //we export the model that we have made
   account,
 };
