@@ -12,7 +12,7 @@ const mongoose = require("mongoose");
 // const { Schema } = mongoose;
 
 mongoose.connect(
-  "mongodb+srv://sanjogbhalla:Cosmos1622@cluster0.l7ccths.mongodb.net/paytm"
+  "mongodb+srv://sanjogbhalla:Cosmos1622@clusterpaytm.8xlxybg.mongodb.net/paytm"
 );
 
 const userSchema = new mongoose.Schema({
@@ -56,24 +56,23 @@ store MongoDB ObjectIDs. MongoDB ObjectIDs are unique identifiers automatically 
 for each document in a collection.
 */
 
-const accountSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId, //reference to User Model , taken from the User table
-    ref: "User", //this ref works as a foreign key as provides a reference to the User model
-    required: true,
-  },
-  balance: {
-    type: Number,
-    required: true,
-  },
-});
+// const accountSchema = new mongoose.Schema({
+//   userId: {
+//     type: mongoose.Schema.Types.ObjectId, //reference to User Model , taken from the User table
+//     ref: "User", //this ref works as a foreign key as provides a reference to the User model
+//     required: true,
+//   },
+//   balance: {
+//     type: Number,
+//     required: true,
+//   },
+// });
 
-const account = mongoose.model("Account", accountSchema);
+// const account = mongoose.model("Account", accountSchema);
 //then make the model for this schema and export it
-const user = mongoose.model("Users", userSchema); //Users here is the naming convention for userSchema
+const user = mongoose.model("User", userSchema); //Users here is the naming convention for userSchema
 
 //this is what you want
 module.exports = {
   user, //we export the model that we have made
-  account,
 };

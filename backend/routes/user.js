@@ -2,7 +2,8 @@ const express = require("express");
 
 const userRouter = express.Router();
 const zod = require("zod");
-const { user, account } = require("../db");
+const { user } = require("../db.js");
+// const { account } = require("../db");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config");
 const authMiddleware = require("../middleware");
@@ -23,7 +24,7 @@ userRouter.post("/signup", async (req, res) => {
   //zod validate it by using safeParse
   const response = userSchema.safeParse(req.body);
   if (!response.success) {
-    res.status(411).json({
+    return res.status(411).json({
       message: "Email already taken / Incorrect inputs",
     });
   }
@@ -40,7 +41,7 @@ userRouter.post("/signup", async (req, res) => {
   }
 
   //this will also take time
-  const user = await create({
+  const User = await user.create({
     username: req.body.username,
     password: req.body.password,
     firstName: req.body.firstName,
@@ -48,14 +49,14 @@ userRouter.post("/signup", async (req, res) => {
   });
 
   //we also get the userid for db that we have made
-  const userId = user._id;
+  const userId = User._id;
 
   //we need to create Account for this user
 
-  await account.create({
-    userId: userId,
-    balance: 1 + Math.random() * 1000,
-  });
+  // await account.create({
+  //   userId: userId,
+  //   balance: 1 + Math.random() * 1000,
+  // });
 
   // Create a JWT token with a payload (e.g., user ID)
   // const payload = { userId: user.id };
@@ -82,9 +83,10 @@ const signinBody = zod.object({
 
 userRouter.post("/signin", async (req, res) => {
   //first we authorize the input
-  const response = userSchema.safeParse(req.body);
+  //we are taking the data wrong we need to use signinBody not  n
+  const response = signinBody.safeParse(req.body);
   if (!response.success) {
-    res.status(411).json({
+    return res.status(411).json({
       message: "Email already taken / Incorrect inputs",
     });
   }
@@ -100,7 +102,7 @@ userRouter.post("/signin", async (req, res) => {
     //we need to return the token
     const token = jwt.sign(
       {
-        userId: user._id,
+        userId: existingUser._id,
       },
       JWT_SECRET
     );
@@ -125,7 +127,7 @@ userRouter.put("/", authMiddleware, async (req, res) => {
   const response = updateUser.safeParse(req.body);
 
   if (!response.success) {
-    res.status(411).json({
+    return res.status(411).json({
       message: "Error while updating information",
     });
   }
@@ -133,7 +135,7 @@ userRouter.put("/", authMiddleware, async (req, res) => {
   //the authentication is already done in the request no we need to update the data
   //we choose User because in Mongoose we use model
   //so Model.updateOne()
-  await user.updateOne({ id: req.userId }, req.body);
+  await user.updateOne({ _id: req.userId }, req.body);
 
   res.json({
     message: "Updated successfully",
@@ -157,28 +159,29 @@ app.get('/user/:id', function(req, res) {
 
 })
 */
-userRouter.get("/bulk", async (req, res) => {
-  const filter = req.query.filter || "";
 
-  const users = await user.find({
-    $or: [
-      {
-        firstName: { $regex: filter },
-      },
-      {
-        lastName: { $regex: filter },
-      },
-    ],
-  });
+// userRouter.get("/bulk", async (req, res) => {
+//   const filter = req.query.filter || "";
 
-  res.json({
-    user: users.map((user) => ({
-      username: user.username,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      _id: user._id,
-    })),
-  });
-});
+//   const users = await user.find({
+//     $or: [
+//       {
+//         firstName: { $regex: filter },
+//       },
+//       {
+//         lastName: { $regex: filter },
+//       },
+//     ],
+//   });
+
+//   res.json({
+//     user: users.map((user) => ({
+//       username: user.username,
+//       firstName: user.firstName,
+//       lastName: user.lastName,
+//       _id: user._id,
+//     })),
+//   });
+// });
 
 module.exports = userRouter;
