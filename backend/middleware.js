@@ -1,13 +1,13 @@
 /*
-An authentication middleware in Express is used to verify the identity of a 
-user before granting access to protected routes or resources. It checks if the incoming 
-request contains a valid authentication token (e.g., JWT) 
+An authentication middleware in Express is used to verify the identity of a
+user before granting access to protected routes or resources. It checks if the incoming
+request contains a valid authentication token (e.g., JWT)
 and ensures that the user is authorized to access the requested resource
 */
-//first setup the JWT
-const jwt = require("jsonwebtoken");
 //get the secret key also
 const { JWT_SECRET } = require("./config");
+//first setup the JWT
+const jwt = require("jsonwebtoken");
 
 //Create an authentication middleware function that verifies the JWT token in the request header.
 const authMiddleware = (req, res, next) => {
@@ -15,8 +15,8 @@ const authMiddleware = (req, res, next) => {
 
   //if this authHeader does not work
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    res.status(403).json({
-      message: "Unauthorized: Missing token",
+    return res.status(403).json({
+      //   message: "Unauthorized: Missing token",
     });
   }
 
@@ -30,12 +30,14 @@ const authMiddleware = (req, res, next) => {
       req.userId = decoded.userId;
       next();
     } else {
-      return res.status(403).json({});
+      return res.status(403).json({
+        message: "Unauthorized: Missing token",
+      });
     }
   } catch (error) {
-    return res.status(403).json({});
+    return res.status(403).json({
+      message: "Unauthorized: Missing token",
+    });
   }
 };
-module.exports = {
-  authMiddleware,
-};
+module.exports = authMiddleware;
