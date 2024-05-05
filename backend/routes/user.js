@@ -123,19 +123,36 @@ const updateUser = zod.object({
   lastName: zod.string().optional(),
 });
 //we need to return these above info and show it in the frontend
-userRouter.put("/", authMiddleware, async (req, res) => {
-  const response = updateUser.safeParse(req.body);
+// userRouter.put("/", authMiddleware, async (req, res) => {
+//   const response = updateUser.safeParse(req.body);
 
-  if (!response.success) {
-    return res.status(411).json({
+//   if (!response.success) {
+//     return res.status(411).json({
+//       message: "Error while updating information",
+//     });
+//   }
+
+//   //the authentication is already done in the request no we need to update the data
+//   //we choose User because in Mongoose we use model
+//   //so Model.updateOne()
+//   await user.updateOne({ _id: req.userId }, req.body);
+
+//   res.json({
+//     message: "Updated successfully",
+//   });
+// });
+
+userRouter.put("/", authMiddleware, async (req, res) => {
+  const { success } = updateUser.safeParse(req.body);
+  if (!success) {
+    res.status(411).json({
       message: "Error while updating information",
     });
   }
 
-  //the authentication is already done in the request no we need to update the data
-  //we choose User because in Mongoose we use model
-  //so Model.updateOne()
-  await user.updateOne({ _id: req.userId }, req.body);
+  await user.updateOne(req.body, {
+    id: req.userId,
+  });
 
   res.json({
     message: "Updated successfully",
