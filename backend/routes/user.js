@@ -2,7 +2,7 @@ const express = require("express");
 
 const userRouter = express.Router();
 const zod = require("zod");
-const { user } = require("../db.js");
+const { user } = require("../db");
 // const { account } = require("../db");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config");
@@ -122,37 +122,21 @@ const updateUser = zod.object({
   firstName: zod.string().optional(),
   lastName: zod.string().optional(),
 });
+
 //we need to return these above info and show it in the frontend
-// userRouter.put("/", authMiddleware, async (req, res) => {
-//   const response = updateUser.safeParse(req.body);
-
-//   if (!response.success) {
-//     return res.status(411).json({
-//       message: "Error while updating information",
-//     });
-//   }
-
-//   //the authentication is already done in the request no we need to update the data
-//   //we choose User because in Mongoose we use model
-//   //so Model.updateOne()
-//   await user.updateOne({ _id: req.userId }, req.body);
-
-//   res.json({
-//     message: "Updated successfully",
-//   });
-// });
-
 userRouter.put("/", authMiddleware, async (req, res) => {
-  const { success } = updateUser.safeParse(req.body);
-  if (!success) {
-    res.status(411).json({
+  const response = updateUser.safeParse(req.body);
+
+  if (!response.success) {
+    return res.status(411).json({
       message: "Error while updating information",
     });
   }
 
-  await user.updateOne(req.body, {
-    id: req.userId,
-  });
+  //the authentication is already done in the request no we need to update the data
+  //we choose User because in Mongoose we use model
+  //so Model.updateOne()
+  await user.updateOne(req.body, { _id: req.userId });
 
   res.json({
     message: "Updated successfully",
@@ -177,28 +161,28 @@ app.get('/user/:id', function(req, res) {
 })
 */
 
-// userRouter.get("/bulk", async (req, res) => {
-//   const filter = req.query.filter || "";
+userRouter.get("/bulk", async (req, res) => {
+  const filter = req.query.filter || "";
 
-//   const users = await user.find({
-//     $or: [
-//       {
-//         firstName: { $regex: filter },
-//       },
-//       {
-//         lastName: { $regex: filter },
-//       },
-//     ],
-//   });
+  const users = await user.find({
+    $or: [
+      {
+        firstName: { $regex: filter },
+      },
+      {
+        lastName: { $regex: filter },
+      },
+    ],
+  });
 
-//   res.json({
-//     user: users.map((user) => ({
-//       username: user.username,
-//       firstName: user.firstName,
-//       lastName: user.lastName,
-//       _id: user._id,
-//     })),
-//   });
-// });
+  res.json({
+    user: users.map((user) => ({
+      username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      _id: user._id,
+    })),
+  });
+});
 
 module.exports = userRouter;
