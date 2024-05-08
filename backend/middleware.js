@@ -56,11 +56,11 @@ const authMiddleware = (req, res, next) => {
   console.log(authHeader);
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(403).json({});
+    return res.status(403).json({ message: "Unauthorized: Missing token" });
   }
 
   const token = authHeader.split(" ")[1];
-
+  //this decoded value is empty and why ?
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     console.log(decoded.userId);
