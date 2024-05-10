@@ -10,7 +10,7 @@ const { JWT_SECRET } = require("./config");
 const jwt = require("jsonwebtoken");
 
 //Create an authentication middleware function that verifies the JWT token in the request header.
-const authMiddleware = async (req, res, next) => {
+const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   console.log(req.headers);
@@ -28,7 +28,7 @@ const authMiddleware = async (req, res, next) => {
   console.log(token);
   try {
     //this will check if both matches
-    const decoded = await jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET);
 
     console.log(decoded);
     if (decoded.userId) {
@@ -45,4 +45,6 @@ const authMiddleware = async (req, res, next) => {
     });
   }
 };
-module.exports = authMiddleware;
+module.exports = {
+  authMiddleware,
+};

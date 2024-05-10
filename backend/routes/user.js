@@ -2,11 +2,10 @@ const express = require("express");
 
 const userRouter = express.Router();
 const zod = require("zod");
-const { user } = require("../db");
-// const { account } = require("../db");
-const jwt = require("jsonwebtoken");
+const { user, account } = require("../db");
 const { JWT_SECRET } = require("../config");
-const authMiddleware = require("../middleware");
+const { authMiddleware } = require("../middleware");
+const jwt = require("jsonwebtoken");
 
 const userSchema = zod.object({
   //username
@@ -50,6 +49,7 @@ userRouter.post("/signup", async (req, res) => {
 
   //we also get the userid for db that we have made
   const userId = User._id;
+  // console.log(userId);
 
   //we need to create Account for this user
 
@@ -67,6 +67,7 @@ userRouter.post("/signup", async (req, res) => {
     },
     JWT_SECRET
   );
+  // console.log(token);
   //now send these tokens back to the client
   res.json({
     message: "User created Successfully",
@@ -136,6 +137,10 @@ userRouter.put("/", authMiddleware, async (req, res) => {
   //the authentication is already done in the request no we need to update the data
   //we choose User because in Mongoose we use model
   //so Model.updateOne()
+  let userId = req.userId;
+  console.log(userId);
+  let value = user.findByIdAndUpdate(userId, req.body);
+  // console.log(value);
   await user.updateOne(req.body, { _id: req.userId });
 
   res.json({

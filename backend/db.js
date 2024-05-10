@@ -11,7 +11,9 @@ user signin ke liye kasa table hoga
 const mongoose = require("mongoose");
 // const { Schema } = mongoose;
 
-mongoose.connect("mongodb://localhost:27017/paytm");
+mongoose.connect(
+  "mongodb+srv://sanjogbhalla:Cosmos1622@clusterpaytm.8xlxybg.mongodb.net/paytm"
+);
 
 const userSchema = new mongoose.Schema({
   username: {
