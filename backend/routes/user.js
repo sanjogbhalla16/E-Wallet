@@ -138,10 +138,10 @@ userRouter.put("/", authMiddleware, async (req, res) => {
   //we choose User because in Mongoose we use model
   //so Model.updateOne()
   let userId = req.userId;
-  console.log(userId);
-  let value = user.findByIdAndUpdate(userId, req.body);
+  // console.log(userId);
+  let value = await user.findByIdAndUpdate(userId, req.body);
   // console.log(value);
-  await user.updateOne(req.body, { _id: req.userId });
+  // await user.updateOne(req.body, { _id: req.userId });
 
   res.json({
     message: "Updated successfully",
