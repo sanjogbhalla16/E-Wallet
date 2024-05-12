@@ -51,12 +51,12 @@ userRouter.post("/signup", async (req, res) => {
   const userId = User._id;
   // console.log(userId);
 
-  //we need to create Account for this user
+  // we need to create Account for this user
 
-  // await account.create({
-  //   userId: userId,
-  //   balance: 1 + Math.random() * 1000,
-  // });
+  await account.create({
+    userId: userId,
+    balance: 1 + Math.random() * 1000,
+  });
 
   // Create a JWT token with a payload (e.g., user ID)
   // const payload = { userId: user.id };
