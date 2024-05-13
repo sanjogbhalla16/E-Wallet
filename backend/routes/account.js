@@ -27,15 +27,19 @@ atomic unit. This means that either all operations within the transaction succee
 */
 accountRouter.post("/transfer", authMiddleware, async (req, res) => {
   //now we need to transfer the money from one user account to another user account
+  //we add the userId in the to section of postman body + the amount to transfer in this account
+  //and for the from account you need to add the token of the account from the money gets deducted
+  //means from ka token in the header and to ki userId in the body
   const session = await mongoose.startSession();
   session.startTransaction();
   //first we take the user from which we have to take the amount
   const { to, amount } = req.body;
-  console.log(req.body);
+  // console.log(req.body);
   //now check if the account is there and if there is balance in it and
   //also check if there is the account of the user we need to transfer money is also there
 
   //this returns a promise so take it in await
+  // console.log(req.userId);
   const Account = await account
     .findOne({ userId: req.userId })
     .session(session); //method ensures that this operation is within the transaction session.
