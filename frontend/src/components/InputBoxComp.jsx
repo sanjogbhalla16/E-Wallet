@@ -6,9 +6,7 @@ export function InputBox({ label, placeholder, onChange }) {
         onChange={onChange}
         placeholder={placeholder}
         className="w-full px-2 py-1 border rounded border-slate-200"
-      >
-        {input}
-      </input>
+      ></input>
     </div>
   );
 }
