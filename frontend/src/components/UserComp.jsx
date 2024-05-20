@@ -5,8 +5,8 @@ export const Users = () => {
   // Replace with backend call
   const [users, setUsers] = useState([
     {
-      firstName: "Bhalla",
-      lastName: "Ji",
+      firstName: "Harkirat",
+      lastName: "Singh",
       _id: 1,
     },
   ]);
