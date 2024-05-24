@@ -2,7 +2,7 @@ import React from "react";
 import { GiWallet } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 
-function Landing() {
+export function Landing() {
   const navigate = useNavigate();
   return (
     <div className="bg-zinc-800 h-screen w-full flex flex-col justify-center items-center">
@@ -18,5 +18,3 @@ function Landing() {
     </div>
   );
 }
-
-export default Landing;

@@ -3,7 +3,7 @@ import { Signup } from "./pages/Signup";
 import { Signin } from "./pages/Signin";
 import { Dashboard } from "./pages/Dashboard";
 import { Landing } from "./pages/Landing";
-import { SendMoney } from "./pages/Send";
+import { Send } from "./pages/Send";
 
 function App() {
   return (
@@ -14,7 +14,7 @@ function App() {
           <Route path="/signin" element={<Signin></Signin>}></Route>
           <Route path="/dashboard" element={<Dashboard></Dashboard>}></Route>
           <Route path="/" element={<Landing></Landing>}></Route>
-          <Route path="/send" element={<SendMoney></SendMoney>}></Route>
+          <Route path="/send" element={<Send></Send>}></Route>
         </Routes>
       </BrowserRouter>
     </div>

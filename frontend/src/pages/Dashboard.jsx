@@ -4,12 +4,12 @@ import { Balance } from "../components/BalanceComp";
 import { Users, User } from "../components/UserComp";
 import axios from "axios";
 
-function Dashboard() {
-  const [users, setUsers] = useState([{}]);
+export function Dashboard() {
+  const [users, setUsers] = useState([]);
 
   //now we need to fetch these values whenever someone will type users in the app bar
   useEffect(() => {
-    axios.get("http://localhost:3000/api/v1/user/").then((response) => {
+    axios.get("http://localhost:3000/api/v1/user").then((response) => {
       setUsers(response.data.user);
     });
   }, [users]);
@@ -28,5 +28,3 @@ function Dashboard() {
     </div>
   );
 }
-
-export default Dashboard;

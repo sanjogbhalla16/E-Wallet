@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { Button } from "./Button";
+import { Button } from "./ButtonComp";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 export const Users = () => {
   // Replace with backend call
   const [users, setUsers] = useState([]);
-  const [filter, setFilter] = useState(""); //these are for the username to be displayed
+  const [filter, setFilter] = useState("");
 
   useEffect(() => {
     axios
@@ -59,8 +59,7 @@ export function User({ user }) {
       <div className="flex flex-col justify-center h-ful">
         <Button
           onClick={(e) => {
-            navigate("/send?id=" + user._id + "&name=" + user.firstName); //this will help us navigate
-            //us to send money page
+            navigate("/send?id=" + user._id + "&name=" + user.firstName);
           }}
           label={"Send Money"}
         />
